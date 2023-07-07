@@ -1,4 +1,4 @@
-# c-salt_vedaweb_transformations
+# VedaWeb TEI transformations
 
 This repository contains the files employed to transform the [source files](https://github.com/VedaWebProject/vedaweb-data) of the VedaWeb project in [TEI format](https://github.com/VedaWebProject/vedaweb-data/tree/main/rigveda/TEI) and validate them.
 

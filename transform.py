@@ -6,6 +6,7 @@ from titlecase import titlecase
 from operator import itemgetter
 
 import utils
+import csv
 
 
 def set_addressees(current_dedic, hymn_node):
@@ -202,12 +203,7 @@ def clean_up_zur_text(to_clean):
     to_clean = to_clean.replace('‖', '')
 
     # ṃ -> ṁ
-    to_clean = to_clean.replace('ṃ', 'ṁ')
-
-    # issue #39
-    # ANNA: GGF. ERGÄNZEN?
-    to_clean = to_clean.replace('!', '')
-    to_clean = to_clean.replace('+', '')
+    #to_clean = to_clean.replace('ṃ', 'ṁ')
 
     # strip text
     to_clean = to_clean.strip()
@@ -215,7 +211,7 @@ def clean_up_zur_text(to_clean):
     return to_clean
 
 
-def set_zurich_info(pada_dict, verse_container, matched_lemmata, corrected_lemmata, leipzig_mapping, verse_id_tei):
+def set_zurich_info(pada_dict, verse_container, corrected_lemmata, leipzig_mapping, verse_id_tei):#matched_lemmata, 
     # <lg xml:id="b_01_h_01_001_01_zur" xml:lang="san-Latn-x-ISO-15919" source="zurich">
     verse_zur = etree.SubElement(verse_container, "lg")
     verse_zur.attrib[
@@ -278,7 +274,6 @@ def set_zurich_info(pada_dict, verse_container, matched_lemmata, corrected_lemma
             f_string.text = token_form
 
             lemma_form = token.get('LEMMA_ZÜRICH')
-            lemma_form = clean_up_zur_text(lemma_form)
 
             # add gra_lemma
             if lemma_form:
@@ -288,19 +283,23 @@ def set_zurich_info(pada_dict, verse_container, matched_lemmata, corrected_lemma
                     f_grassmann_lemma, 'string')
                 string_lemma_grassmann.text = lemma_form
 
-                #manual corrections of Grassmann entries (June 2023):
+                #manual corrections of Grassmann entries:
                 manual_correction = ""
                 if corrected_lemmata.get(lemma_form):
                     gra_mapping_entry = corrected_lemmata[lemma_form]
                     if gra_mapping_entry.get("gra_lemma_id_1"):
-                        manual_correction = "#"+gra_mapping_entry["gra_lemma_id_1"]
+                        if not ";" in gra_mapping_entry["gra_lemma_id_1"]:
+                            manual_correction = "#lemma_"+gra_mapping_entry["gra_lemma_id_1"]
+                        else: 
+                            manual_correction = "#lemma_"+gra_mapping_entry["gra_lemma_id_1"].replace(";", " #lemma_")
                     if gra_mapping_entry.get("gra_lemma_id_2"):
-                        manual_correction += " #"+gra_mapping_entry["gra_lemma_id_2"]
+                        manual_correction += " #lemma_"+gra_mapping_entry["gra_lemma_id_2"]
                     if manual_correction:
                         string_lemma_grassmann.attrib['correction'] = manual_correction
-                # automatically matched
-                else:
-                    #automatic corrections
+                    else:
+                        print("No Grassmann match for:", lemma_form)
+                    '''
+                    # automatically matched
                     if matched_lemmata:
                         matched_lemma = matched_lemmata.get(token_form_src)
                         if matched_lemma:
@@ -325,6 +324,10 @@ def set_zurich_info(pada_dict, verse_container, matched_lemmata, corrected_lemma
                                 print("No Grassmann match for:", lemma_form)
                     else:
                         print("No Grassmann match for:", lemma_form)
+                    '''
+
+            lemma_form_clean = clean_up_zur_text(lemma_form)
+
             # add gra_gramm
 
             gra_gramm = token.get('LEMMA_ZÜRICH_LEMMATYP')
@@ -457,7 +460,7 @@ def set_header(root):
 def verses_into_tei(rv, grassmann_enum, leipzig_mapping, addresees, stanza_properties, strata, aufrecht, lubotsky,
                     vnh_texas, padapatha,
                     geldner, grassmann,
-                    otto, griffith, macdonell, mueller, oldenberg, renou, eichler, elizarenkova, matched_lemmata, corrected_lemmata,
+                    otto, griffith, macdonell, mueller, oldenberg, renou, eichler, elizarenkova, corrected_lemmata,#matched_lemmata
                     output_dir):
     for book, v1 in rv.items():
 
@@ -514,8 +517,8 @@ def verses_into_tei(rv, grassmann_enum, leipzig_mapping, addresees, stanza_prope
                 # SANSKRIT
                 # zurich
                 set_zurich_info(pada_dict=v3, verse_container=verse_container,
-                                matched_lemmata=matched_lemmata,
-                                #add manual corrections of Grassmann entries 2023
+                                #matched_lemmata=matched_lemmata,#
+                                #add manual corrections of Grassmann entries:
                                 corrected_lemmata=corrected_lemmata,
                                 leipzig_mapping=leipzig_mapping,
                                 verse_id_tei=verse_id_tei)
@@ -660,12 +663,13 @@ def transform_rv(args):
         grassmann_enum = utils.read_json(
             sources_repo + '/rigveda/info/grassmann_enum.json')
 
-        matched_lemmata = utils.read_json(
-            sources_repo + '/rigveda/info/matched_lemmata.json')
+        #matched_lemmata = utils.read_json(
+        #    sources_repo + '/rigveda/info/matched_lemmata.json')
 
-        # list of manually revised references to Grassmann entries (June 2023)
+        # list of manually revised references to Grassmann entries
         corrected_lemmata = utils.read_grassmann_corrections(
             sources_repo + '/rigveda/info/revised_grassmann_mapping.csv')
+
 
         # zurich: lubotsky, morphosyntax, lemmata in GRA
         rv_zur = utils.read_zurich(
@@ -734,7 +738,8 @@ def transform_rv(args):
                         grassmann=grassmann, otto=otto, griffith=griffith, macdonell=macdonell,
                         mueller=mueller, oldenberg=oldenberg, renou=renou, eichler=eichler,
                         elizarenkova=elizarenkova,
-                        matched_lemmata=matched_lemmata, corrected_lemmata=corrected_lemmata, output_dir=tei_repo)
+                        #matched_lemmata=matched_lemmata, 
+                        corrected_lemmata=corrected_lemmata, output_dir=tei_repo)
 
         ## actualize commit info into vedaweb_corpus.teo#tei_header
 

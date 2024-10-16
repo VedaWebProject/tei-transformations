@@ -58,7 +58,8 @@ def read_csv_to_dict(filename):
 
                     #read rows without subverses
                     if pada_count == "-":
-                        d[vers_id] = row[2]
+                        pada_count = "a"
+                        d[vers_id] = d[vers_id]=[[pada_count, text]]
 
                     # read rows with subverses:
                     else:

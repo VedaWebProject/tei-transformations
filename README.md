@@ -15,3 +15,8 @@ After installing conda, you should import the `environment.yml` file and, activa
 ## Validate
 
 `python validate.py (path_to_vedaweb-data/rigveda/TEI)`
+
+
+## Upcoming Updates
+
+There will be a code and TEI update in 2025. 

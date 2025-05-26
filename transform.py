@@ -6,7 +6,6 @@ from titlecase import titlecase
 from operator import itemgetter
 
 import utils
-import csv
 
 
 def set_addressees(current_dedic, hymn_node):
@@ -211,7 +210,7 @@ def clean_up_zur_text(to_clean):
     return to_clean
 
 
-def set_zurich_info(pada_dict, verse_container, corrected_lemmata, leipzig_mapping, verse_id_tei):#matched_lemmata, 
+def set_zurich_info(pada_dict, verse_container, corrected_lemmata, leipzig_mapping, verse_id_tei):#matched_lemmata,
     # <lg xml:id="b_01_h_01_001_01_zur" xml:lang="san-Latn-x-ISO-15919" source="zurich">
     verse_zur = etree.SubElement(verse_container, "lg")
     verse_zur.attrib[
@@ -246,7 +245,7 @@ def set_zurich_info(pada_dict, verse_container, corrected_lemmata, leipzig_mappi
 
         try:
             sorted_pada = sorted(pada_dict.get(pada_id), key=itemgetter('TOKEN_NR_PADA'))
-        except:
+        except Exception:
             print("Vers or pada count missing:", verse_id_tei, pada_id)
 
         for token in sorted_pada:
@@ -266,7 +265,7 @@ def set_zurich_info(pada_dict, verse_container, corrected_lemmata, leipzig_mappi
             f_string = etree.SubElement(f_surface, "string")
 
             token_form = token.get('FORM')
-            token_form_src = token.get('FORM')
+            # token_form_src = token.get('FORM')
             # token_form_src = unicodedata.normalize('NFC', token_form_src)
 
             # clean_up
@@ -288,9 +287,9 @@ def set_zurich_info(pada_dict, verse_container, corrected_lemmata, leipzig_mappi
                 if corrected_lemmata.get(lemma_form):
                     gra_mapping_entry = corrected_lemmata[lemma_form]
                     if gra_mapping_entry.get("gra_lemma_id_1"):
-                        if not ";" in gra_mapping_entry["gra_lemma_id_1"]:
+                        if ";" not in gra_mapping_entry["gra_lemma_id_1"]:
                             manual_correction = "#lemma_"+gra_mapping_entry["gra_lemma_id_1"]
-                        else: 
+                        else:
                             manual_correction = "#lemma_"+gra_mapping_entry["gra_lemma_id_1"].replace(";", " #lemma_")
                     if gra_mapping_entry.get("gra_lemma_id_2"):
                         manual_correction += " #lemma_"+gra_mapping_entry["gra_lemma_id_2"]
@@ -326,7 +325,7 @@ def set_zurich_info(pada_dict, verse_container, corrected_lemmata, leipzig_mappi
                         print("No Grassmann match for:", lemma_form)
                     '''
 
-            lemma_form_clean = clean_up_zur_text(lemma_form)
+            # lemma_form_clean = clean_up_zur_text(lemma_form)
 
             # add gra_gramm
 
@@ -378,7 +377,7 @@ def set_zurich_info(pada_dict, verse_container, corrected_lemmata, leipzig_mappi
 
             for k, v in basic.items():
                 try:
-                    if v and not "/" in v and not "," in v:
+                    if v and "/" not in v and "," not in v:
                         mapping = leipzig_mapping.get(utils.clean_up_morpho_info(v))
                         if mapping:
                             f_gloss = etree.SubElement(fs_leipzig, 'f')
@@ -738,7 +737,7 @@ def transform_rv(args):
                         grassmann=grassmann, otto=otto, griffith=griffith, macdonell=macdonell,
                         mueller=mueller, oldenberg=oldenberg, renou=renou, eichler=eichler,
                         elizarenkova=elizarenkova,
-                        #matched_lemmata=matched_lemmata, 
+                        #matched_lemmata=matched_lemmata,
                         corrected_lemmata=corrected_lemmata, output_dir=tei_repo)
 
         ## actualize commit info into vedaweb_corpus.teo#tei_header

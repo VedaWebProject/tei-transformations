@@ -47,7 +47,7 @@ def read_csv_to_dict(filename):
                 try:
                     text = row[1]
                     d[vers_id] = text
-                except:
+                except Exception:
                     print("Cannot read the following row: " + str(row))
 
             # read files with subverses i.e. files containing 3 columns
@@ -68,7 +68,7 @@ def read_csv_to_dict(filename):
                         else:
                             d[vers_id].append([pada_count, text])
 
-                except:
+                except Exception:
                     print("Cannot read the following row: "+str(row))
         print("... reading", filename, "("+str(len(d))+" stanzas)")
         return d
@@ -120,5 +120,3 @@ def clean_up_morpho_info(key):
     key = key.lower()
     key = key.strip(punctuation)
     return key
-
-

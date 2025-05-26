@@ -1,21 +1,14 @@
-anaconname: vedaweb_transformations
+name: vedaweb_transformations
 channels:
+  - conda-forge
   - defaults
 dependencies:
-  - ca-certificates=2022.4.26=hecd8cb5_0
-  - certifi=2022.5.18.1=py39hecd8cb5_0
-  - libcxx=12.0.0=h2f01273_0
-  - libffi=3.3=hb1e8313_2
-  - ncurses=6.3=hca72f7f_2
-  - openssl=1.1.1o=hca72f7f_0
-  - pip=21.2.4=py39hecd8cb5_0
-  - python=3.9.0=h88f2d9e_2
-  - readline=8.1.2=hca72f7f_1
-  - setuptools=61.2.0=py39hecd8cb5_0
-  - sqlite=3.38.3=h707629a_0
-  - tk=8.6.12=h5d9f67b_0
-  - tzdata=2022a=hda174b7_0
-  - wheel=0.37.1=pyhd3eb1b0_0
-  - xz=5.2.5=hca72f7f_1
-  - zlib=1.2.12=h4dc903c_2
-prefix: /usr/local/anaconda3/envs/vedaweb_transformations
+  - six==1.15.0
+  - python-dateutil==2.8.1
+  - titlecase==1.1.1
+  - pytz==2020.4
+  - pandas==1.1.5
+  - numpy==1.19.4
+  - regex==2020.11.13
+  - xlrd==1.2.0
+  - lxml==4.6.2

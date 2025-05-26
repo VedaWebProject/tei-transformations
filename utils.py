@@ -77,7 +77,6 @@ def read_grassmann_corrections(filename):
     print("... reading " + filename)
     # csv.field_size_limit = sys.maxsize
     with open(filename, "r", encoding="utf-8") as csv_data:
-        # problem with csv.reader-method! --> old school readlines()
         reader_list = list(csv.DictReader(csv_data))
         d = {}
         for entry in reader_list:
